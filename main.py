@@ -11,15 +11,24 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from time import sleep
+from dotenv import load_dotenv
 
 try:
     from random_words import RandomWords
 except ImportError:
-    os.system("pip3 install RandomWords")
+    os.system("pip install RandomWords")
     from random_words import RandomWords
     pass
 finally:
     rw = RandomWords()
+  
+# Load ENV
+load_dotenv()
+if not os.environ["LOCAL_REST"] or not os.environ["LOCAL_ADDRESS"]:
+  raise Exception("LOCAL_REST or LOCAL_ADDRESS env variables are not set/or not found. Please add them before running the program.")
+else:
+  RESTAURANT = os.environ["LOCAL_REST"]
+  ADDY = os.environ["LOCAL_ADDRESS"]
 
 def signUp(driver):
     driver.get("https://doordash.com/")
@@ -51,10 +60,10 @@ def signUp(driver):
             By.ID, value='FieldWrapper-2').send_keys(f'{email}')
         sleep(3)
         driver.find_element(
-            By.ID, value='FieldWrapper-4').send_keys('12345678904')
+            By.ID, value='FieldWrapper-4').send_keys('12345375984')
         sleep(2)
         driver.find_element(
-            By.ID, value='FieldWrapper-5').send_keys('WoahsoSecure')
+            By.ID, value='FieldWrapper-5').send_keys('W0ahs0S3cure')
     except:
         pass
     try:
@@ -72,9 +81,8 @@ def signUp(driver):
 
 def updateQuant(driver):
     print('Attempting to add quantity...')
-    LocalRestaurantLink = 'https://www.doordash.com/store/YOUR_LOCAL_RESTURANT_HERE}/'
     sleep(4)
-    driver.get(f'{LocalRestaurantLink}')
+    driver.get(f'{RESTAURANT}')
     sleep(5)
     try:
         driver.find_element(
@@ -120,7 +128,7 @@ if (chwd[1]):
     driver.close()
     driver._switch_to.window(chwd[0])
 driver.find_element(By.TAG_NAME, value='input').send_keys(
-    f'YOUR_ADDRESS_HERE' + Keys.ENTER)
+    f'{ADDY}' + Keys.ENTER)
 sleep(2)
 driver.find_element(By.TAG_NAME, value='input').send_keys(Keys.ENTER)
 sleep(5)
