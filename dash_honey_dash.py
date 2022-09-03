@@ -1,0 +1,253 @@
+import os
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from time import sleep
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from time import sleep
+
+try:
+    from random_words import RandomWords
+except ImportError:
+    os.system("pip3 install RandomWords")
+    from random_words import RandomWords
+    pass
+finally:
+    rw = RandomWords()
+
+def signUp(driver):
+    driver.get("https://doordash.com/")
+    print('Attempting to sign up...')
+    sleep(5)
+    email = rw.random_word() + rw.random_word() + rw.random_word() + '@gmail.com'
+    try:
+        driver.find_element(
+            By.XPATH, value='/html/body/div[1]/div[1]/div[1]/header/div/div[2]/div[3]/a[2]/div/div/div/span/span').click()
+    except:
+        sleep(2)
+    try:
+        driver.find_element(
+            By.XPATH, value='/html/body/div[1]/div[1]/div[1]/header/div/div[2]/div[3]/a[2]/div/div/div/span').click()
+    except:
+        sleep(2)
+    try:
+        driver.find_element(
+            By.XPATH, value='/html/body/div[1]/div[1]/div[1]/header/div/div[2]/div[3]/a[2]').click()
+    except:
+        sleep(2)
+
+    try:
+        driver.find_element(By.ID, value='FieldWrapper-0').send_keys('John')
+        sleep(3)
+        driver.find_element(By.ID, value='FieldWrapper-1').send_keys('Doe')
+        sleep(3)
+        driver.find_element(
+            By.ID, value='FieldWrapper-2').send_keys(f'{email}')
+        sleep(3)
+        driver.find_element(
+            By.ID, value='FieldWrapper-4').send_keys('12345678904')
+        sleep(2)
+        driver.find_element(
+            By.ID, value='FieldWrapper-5').send_keys('WoahsoSecure')
+    except:
+        pass
+    try:
+        driver.find_element(By.ID, value='sign-up-submit-button').click()
+        print('Sign up successful!')
+    except:
+        try:
+            driver.find_element(
+                By.ID, value='FieldWrapper-5').send_keys(Keys.ENTER)
+            print('Sign up successful!')
+        except:
+            pass
+        pass
+
+
+def updateQuant(driver):
+    print('Attempting to add quantity...')
+    LocalRestaurantLink = 'https://www.doordash.com/store/YOUR_LOCAL_RESTURANT_HERE}/'
+    sleep(4)
+    driver.get(f'{LocalRestaurantLink}')
+    sleep(5)
+    try:
+        driver.find_element(
+            By.XPATH, value='/html/body/div[1]/main/div/div[1]/div[1]/div/div[3]/div/div/div/div[2]/div[1]/button').click()
+    except:
+        pass
+    try:
+        driver.find_element(
+            By.XPATH, value='/html/body/div[1]/main/div/div[1]/div[1]/div/div[4]/div[3]/div[2]/div[3]/button').click()
+    except Exception as e:
+        pass
+    try:
+        col = driver.find_element(
+            By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div[1]/div/div[6]/div[2]')
+        col = col.find_elements(By.XPATH, value='*')
+        col[0].click()
+    except:
+        pass
+    sleep(4)
+    quant = driver.find_element(
+        By.XPATH, value='//*[@id="prism-modal-footer"]/div/div/div/div[1]/div[3]/button')
+    for i in range(8):
+        quant.click()
+        sleep(1)
+    driver.find_element(
+        By.XPATH, value='/html/body/div[1]/main/div/div[4]/div/div[2]/div/div[2]/div[3]/div/div/div/div/div/div[2]/button').click()
+    sleep(10)
+    print('Quantity Added')
+
+
+chrome_options = Options()
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+chrome_options.add_extension('honey.crx')
+driver = webdriver.Chrome(options=chrome_options)
+driver.maximize_window()
+
+driver.get('https://doordash.com/home')
+sleep(5)
+chwd = driver.window_handles
+if (chwd[1]):
+    driver._switch_to.window(chwd[1])
+    driver.close()
+    driver._switch_to.window(chwd[0])
+driver.find_element(By.TAG_NAME, value='input').send_keys(
+    f'YOUR_ADDRESS_HERE' + Keys.ENTER)
+sleep(2)
+driver.find_element(By.TAG_NAME, value='input').send_keys(Keys.ENTER)
+sleep(5)
+updateQuant(driver)
+signUp(driver)
+driver.get('https://doordash.com/')
+
+try:
+    try:
+        sleep(5)
+        driver.find_element(
+            By.XPATH, value='/html/body/div[1]/div[1]/div[4]/div/div[2]/div/div[2]/div/div[2]/div/div/div/button/div/div/div/span').click()
+    except:
+        pass
+    driver.find_element(
+        By.XPATH, value='/html/body/div[1]/div[1]/div[4]/div/div[2]/div/div[2]/div/div[2]/div/div/div/button').click()
+except:
+    pass
+finally:
+    sleep(3)
+
+try:
+    driver.find_element(
+        By.XPATH, value='/html/body/div[1]/div[1]/div[1]/header/div/div[2]/div[2]/button/div/div/div/span/div/div').click()
+except:
+    sleep(2)
+try:
+    driver.find_element(
+        By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[1]/header/div/div[2]/div[2]/button').click()
+except:
+    sleep(2)
+try:
+    driver.find_element(
+        By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/span/span/span/a').click()
+except:
+    sleep(5)
+sleep(3)
+try:
+    driver.send_keys(Keys.TAB + Keys.TAB + Keys.ENTER)
+except:
+    pass
+try:
+    driver.find_element(
+        By.XPATH, value='//*[@id="root"]/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div/span/div/div[2]').click()
+except:
+    sleep(2)
+try:
+    driver.find_element(
+        By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a').click()
+except:
+    sleep(2)
+try:
+    driver.find_element(
+        By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div').click()
+except:
+    sleep(2)
+try:
+    driver.find_element(
+        By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div/span/div/div[1]').click()
+except:
+    sleep(2)
+try:
+    driver.find_element(
+        By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div/span/div/div[1]').click()
+except:
+    pass
+try:
+    driver.find_element(
+        By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div/span').click()
+except:
+    pass
+print('in cart, maybe?')
+sleep(10)
+
+
+# PROMO
+try:
+    sleep(4)
+    driver.find_element(
+        By.XPATH, value='/html/body/div[1]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[1]/div[3]/div[3]/button/div/div[2]/span/span').click()
+except:
+    pass
+finally:
+    sleep(3)
+try:
+    driver.find_element(
+        By.XPATH, value='/html/body/div[1]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[1]/div[3]/div[3]/button').click()
+except:
+    pass
+finally:
+    sleep(3)
+try:
+    while True:
+
+        try:
+            driver.find_element(
+                By.XPATH, value='/html/div//div[2]/div/div/div/div/div/div/div[1]/div[2]/div[3]/div/button/div/div').click()
+        except:
+            pass
+
+        try:
+            driver.find_element(By.CLASS_NAME, value='btnCopy-0-3-54').click()
+        except:
+            pass
+        try:
+            driver.find_element(By.XPATH, value='//*[@id="c1_g0"]').click()
+        except:
+            pass
+        try:
+            driver.find_element(By.XPATH, value='//*[@id="c1_g0"]/div').click()
+        except:
+            pass
+
+        try:
+            driver.find_element(
+                By.XPATH, value='/html/div//div[2]/div/div/div/div/div/div/div[1]/div[2]/div[3]/div/button/div/div').click()
+        except:
+            pass
+        try:
+            driver.find_element(
+                By.XPATH, value='/html/div//div[2]/div/div/div/div/div/div/div[1]/div[2]/div[3]/div/button').click()
+        except:
+            pass
+        try:
+            driver.find_element(
+                By.XPATH, value='/html/div//div[2]/div/div/div/div/div/div/div[1]/div[2]/div[3]/div/button').click()
+        except:
+            pass
+except:
+    pass
