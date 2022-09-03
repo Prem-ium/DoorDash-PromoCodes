@@ -10,6 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
+import traceback
 from time import sleep
 from dotenv import load_dotenv
 
@@ -25,16 +26,17 @@ finally:
 # Load ENV
 load_dotenv()
 if not os.environ["LOCAL_REST"] or not os.environ["LOCAL_ADDRESS"]:
-  raise Exception("LOCAL_REST or LOCAL_ADDRESS env variables are not set/or not found. Please add them before running the program.")
+    raise Exception("LOCAL_REST or LOCAL_ADDRESS env variables are not set/or not found. Please add them before running the program.")
 else:
-  RESTAURANT = os.environ["LOCAL_REST"]
-  ADDY = os.environ["LOCAL_ADDRESS"]
+    RESTAURANT = os.environ["LOCAL_REST"]
+    ADDY = os.environ["LOCAL_ADDRESS"]
 
 def signUp(driver):
     driver.get("https://doordash.com/")
     print('Attempting to sign up...')
     sleep(5)
-    email = rw.random_word() + rw.random_word() + rw.random_word() + '@gmail.com'
+    EMAIL = rw.random_word() + rw.random_word() + rw.random_word() + '@gmail.com'
+    PASSWORD = rw.random_word() + rw.random_word() + '!'
     try:
         driver.find_element(
             By.XPATH, value='/html/body/div[1]/div[1]/div[1]/header/div/div[2]/div[3]/a[2]/div/div/div/span/span').click()
@@ -57,13 +59,13 @@ def signUp(driver):
         driver.find_element(By.ID, value='FieldWrapper-1').send_keys('Doe')
         sleep(3)
         driver.find_element(
-            By.ID, value='FieldWrapper-2').send_keys(f'{email}')
+            By.ID, value='FieldWrapper-2').send_keys(f'{EMAIL}')
         sleep(3)
         driver.find_element(
             By.ID, value='FieldWrapper-4').send_keys('12345375984')
         sleep(2)
         driver.find_element(
-            By.ID, value='FieldWrapper-5').send_keys('W0ahs0S3cure')
+            By.ID, value='FieldWrapper-5').send_keys(f'{PASSWORD}')
     except:
         pass
     try:
@@ -75,8 +77,11 @@ def signUp(driver):
                 By.ID, value='FieldWrapper-5').send_keys(Keys.ENTER)
             print('Sign up successful!')
         except:
-            pass
+            print('Sign up may have failed...')
+            raise Exception(f'Sign up failed...\n{traceback.format_exc()}')
         pass
+    print(f'\nGenerated Account:\nEmail:\t{EMAIL}\nPassword:\t{PASSWORD}\n\n')
+    return EMAIL, PASSWORD
 
 
 def updateQuant(driver):
@@ -110,7 +115,7 @@ def updateQuant(driver):
     driver.find_element(
         By.XPATH, value='/html/body/div[1]/main/div/div[4]/div/div[2]/div/div[2]/div[3]/div/div/div/div/div/div[2]/button').click()
     sleep(10)
-    print('Quantity Added')
+    print('Quantity Sucessfully Added')
 
 
 chrome_options = Options()
@@ -133,7 +138,7 @@ sleep(2)
 driver.find_element(By.TAG_NAME, value='input').send_keys(Keys.ENTER)
 sleep(5)
 updateQuant(driver)
-signUp(driver)
+EMAIL, PASSWORD = signUp(driver)
 driver.get('https://doordash.com/')
 
 try:
@@ -200,11 +205,12 @@ try:
         By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div/span').click()
 except:
     pass
-print('in cart, maybe?')
+print('Arrived at Checkout')
 sleep(10)
 
+# TODO: Failsafe for if sign up still shows up in checkout
 
-# PROMO
+# PROMO (Cannot automate this, unfortunately)
 try:
     sleep(4)
     driver.find_element(
