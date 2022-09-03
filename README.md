@@ -2,6 +2,13 @@
 
 A 98% automated method of finding the best DoorDash/DashPass coupons/discounts.
 
+## Important Notes
+Project Status: Incomplete.
+
+As it stands right now, this python program will do the heavy lifting and automate the boring tedious tasks such as signing up for a new account and filling the cart up. The user currently will need to intervene towards the very end of the program where the checkout cart page is loaded to click the pop-up button 'Apply Coupons.' 
+
+This program can be especially be helpful on the go, running through a replit on your phone should be able to help a user obtain some very nice coupon/promo codes without needing to log onto a computer and wait for execution.
+
 ## Installation
 The bot can be run using Python.
 ### Python Script
@@ -20,7 +27,7 @@ The bot can be run using Python.
 
 ## Environment Variables:
 
-To run this project, you will need to add the following environment variables to your `.env` file. 
+To run this project, you will need to add the following environment variables to your `.env` file. Variables are necessary due to certain DoorDash coupons being targeted towards certain parts of the country. You're welcome to put an address outside of your city or state, but I cannot guarantee whether a promo code will work for your main account if you choose to go that route.
 
 `LOCAL_REST` = A string representing any local DoorDash resturant.
 
