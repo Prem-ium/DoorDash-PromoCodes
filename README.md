@@ -7,7 +7,7 @@ Project Status: Incomplete.
 
 As it stands right now, this python program will do the heavy lifting and automate the boring tedious tasks such as signing up for a new account and filling the cart up. The user currently will need to intervene towards the very end of the program where the checkout cart page is loaded to click the pop-up button 'Apply Coupons.' 
 
-This program can be especially be helpful on the go, running through a replit on your phone should be able to help a user obtain some very nice coupon/promo codes without needing to log onto a computer and wait for execution.
+This program can be especially helpful on the go, running the program on replit through your phone should be able to help a user obtain some very nice coupon/promo codes without needing to log onto a computer to quickly find the best coupon/promo code to use.
 
 ## Installation
 The bot can be run using Python.
@@ -33,4 +33,8 @@ To run this project, you will need to add the following environment variables to
 
 `LOCAL_ADDRESS` = A local address in your area. Does not have to be your own necessairly, just make sure it is within the `LOCAL_REST`'s delivery range.
 
+`AUTO_SIGNIN` = Boolean True/False whether you will provide the LOGIN in env
+
 `LOGIN` = Existing DoorDash Email/Password Credentials, seperated by ':', see .env for an example.
+
+`HANDLE_CART`= Boolean True/False, whether you want the program to automate filling a cart, or use pre-existing (only available when AUTO_SIGNIN is set to True)
