@@ -14,17 +14,26 @@ import traceback
 from time import sleep
 from dotenv import load_dotenv
 
-try:
-    from random_words import RandomWords
-except ImportError:
-    os.system("pip install RandomWords")
-    from random_words import RandomWords
-    pass
-finally:
-    rw = RandomWords()
-  
 # Load ENV
 load_dotenv()
+
+SIGNUP = False
+if not os.environ["LOGIN"]:
+    SIGNUP = True
+    try:
+        from random_words import RandomWords
+    except ImportError:
+        os.system("pip3 install RandomWords")
+        from random_words import RandomWords
+        pass
+    finally:
+        rw = RandomWords()
+else:
+    LOGIN = os.environ["LOGIN"]
+    colonIndex = LOGIN.index(":")+1
+    LOGIN_EMAIL = LOGIN[0:colonIndex-1]
+    LOGIN_PASSWORD = LOGIN[colonIndex:len(LOGIN)]
+    
 if not os.environ["LOCAL_REST"] or not os.environ["LOCAL_ADDRESS"]:
     raise Exception("LOCAL_REST or LOCAL_ADDRESS env variables are not set/or not found. Please add them before running the program.")
 else:
@@ -82,7 +91,23 @@ def signUp(driver):
         pass
     print(f'\nGenerated Account:\nEmail:\t{EMAIL}\nPassword:\t{PASSWORD}\n\n')
     return EMAIL, PASSWORD
+def signin_doordash(driver):
+    print('Attempting to sign in...')
+    driver.get('https://www.doordash.com/consumer/login')
+    sleep(10)
+    try:
+        driver.find_element(By.ID, value = 'IdentityLoginPageEmailField').send_keys(LOGIN_EMAIL)
+    except:
+        driver.find_element(By.ID, value = 'FieldWrapper-0').send_keys(LOGIN_EMAIL)
+    try:
+        driver.find_element(By.ID, value = 'IdentityLoginPagePasswordField').send_keys(LOGIN_PASSWORD)
+    except:
+        driver.find_element(By.ID, value = 'FieldWrapper-1').send_keys(LOGIN_PASSWORD)
 
+    try:
+        driver.find_element(By.XPATH, value = '/html/body/div[1]/div/div[1]/div/div/div/div/div/div/div/form/div/button/div/div/div/span').click()
+    except:
+        driver.find_element(By.ID, value = 'FieldWrapper-1').send_keys(Keys.ENTER)
 
 def updateQuant(driver):
     print('Attempting to add quantity...')
@@ -132,13 +157,38 @@ if (chwd[1]):
     driver._switch_to.window(chwd[1])
     driver.close()
     driver._switch_to.window(chwd[0])
-driver.find_element(By.TAG_NAME, value='input').send_keys(
-    f'{ADDY}' + Keys.ENTER)
-sleep(2)
-driver.find_element(By.TAG_NAME, value='input').send_keys(Keys.ENTER)
+
+if not SIGNUP:
+    signin_doordash(driver)
+    print('May have signed in sucessfully, possible verification required... Sleeping for 1 minute.')
+    sleep(60)
+
+    try:
+        driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[2]/div/div[3]/div/a/span').click()
+    except:
+        pass    
+    try:
+        driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[2]/div/div[3]/div/a/span').click()
+    except:
+        pass
+    try:
+        driver.find_element(By.XPATH, value = '//*[@id="__next"]/main/div/div[1]/div/div[1]/div/a[1]/div/div/div/span/span').click()
+    except:
+        pass
+    sleep(7)
+
+try:
+    driver.find_element(By.TAG_NAME, value='input').send_keys(f'{ADDY}' + Keys.ENTER)
+    sleep(2)
+    driver.find_element(By.TAG_NAME, value='input').send_keys(Keys.ENTER)
+except:
+    print('Exception occured, hopefully you have already been signed in with existing address...')
+    pass
 sleep(5)
 updateQuant(driver)
-EMAIL, PASSWORD = signUp(driver)
+if SIGNUP:
+    EMAIL, PASSWORD = signUp(driver)
+
 driver.get('https://doordash.com/')
 
 try:

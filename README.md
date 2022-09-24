@@ -32,3 +32,5 @@ To run this project, you will need to add the following environment variables to
 `LOCAL_REST` = A string representing any local DoorDash resturant.
 
 `LOCAL_ADDRESS` = A local address in your area. Does not have to be your own necessairly, just make sure it is within the `LOCAL_REST`'s delivery range.
+
+`LOGIN` = Existing DoorDash Email/Password Credentials, seperated by ':', see .env for an example.
