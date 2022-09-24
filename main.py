@@ -22,25 +22,30 @@ if AUTO_SIGNIN.lower() == 'true':
         raise Exception('AUTO_SIGNIN set to true, however the LOGIN environment variable is not set!')
     else:
         LOGIN_EMAIL, LOGIN_PASSWORD = os.environ["LOGIN"].split(':')
-        HANDLE_CART = os.environ.get('HANDLE_CART', 'true')
+        HANDLE_CART = os.environ.get('HANDLE_CART', 'false')
         if HANDLE_CART.lower() == 'true':
             HANDLE_CART = True
         else:
             HANDLE_CART = False
-        print(
-            f'Auto-sign in enabled with {LOGIN_EMAIL}.\nHandle Cart is set to {HANDLE_CART}\n')
+        print(f'Auto-sign in enabled with {LOGIN_EMAIL}.\nHandle Cart is set to {HANDLE_CART}\n')
 else:
     AUTO_SIGNIN = False
     try:
         from random_words import RandomWords
     except ImportError:
-        os.system("pip3 install RandomWords")
+        os.system("pip install RandomWords")
         from random_words import RandomWords
         pass
     finally:
         rw = RandomWords()
-        HANDLE_CART = True
-        print(f'Auto-sign in disabled.\nNew DoorDash login will be generated for new user test case.\nHandle Cart is set to {HANDLE_CART}\n')
+    try:
+        SIGNUP_EMAIL, SIGNUP_PASSWORD = os.environ["SIGNUP_LOGIN"].split(':')
+    except KeyError:
+        SIGNUP_EMAIL = rw.random_word() + rw.random_word() + rw.random_word() + '@gmail.com'
+        SIGNUP_PASSWORD = rw.random_word() + rw.random_word() + '!'
+        print(f'No SIGNUP_LOGIN environment variable found, using generated account.\n')
+    HANDLE_CART = True
+    print(f'Auto-sign in disabled.\nNew DoorDash login will be generated for new user test case.\n(Fake) EMAIL:{SIGNUP_EMAIL}\nPASSWORD:{SIGNUP_PASSWORD}\nHandle Cart is set to {HANDLE_CART}\n')
 
 
 if (not os.environ["LOCAL_REST"] or not os.environ["LOCAL_ADDRESS"]) and HANDLE_CART:
@@ -63,6 +68,7 @@ def getDriver():
                 options=chrome_options)
     driver.maximize_window()
     return driver
+
 def signUp(driver):
     driver.get("https://doordash.com/")
     print('\nAttempting to sign up...\n')
@@ -87,11 +93,11 @@ def signUp(driver):
         sleep(3)
         driver.find_element(By.ID, value='FieldWrapper-1').send_keys('Doe')
         sleep(3)
-        driver.find_element(By.ID, value='FieldWrapper-2').send_keys(f'{EMAIL}')
+        driver.find_element(By.ID, value='FieldWrapper-2').send_keys(f'{SIGNUP_EMAIL}')
         sleep(3)
         driver.find_element(By.ID, value='FieldWrapper-4').send_keys('12345375984')
         sleep(2)
-        driver.find_element(By.ID, value='FieldWrapper-5').send_keys(f'{PASSWORD}')
+        driver.find_element(By.ID, value='FieldWrapper-5').send_keys(f'{SIGNUP_PASSWORD}')
     except:
         pass
     try:
@@ -200,7 +206,6 @@ if HANDLE_CART:
 
 if not AUTO_SIGNIN:
     EMAIL, PASSWORD = signUp(driver)
-    print(f'Signed up with the following generated credentials:\nEMAIL: {EMAIL}\nPASSWORD: {PASSWORD}')
 
 driver.get('https://doordash.com/')
 
@@ -260,50 +265,3 @@ except:
     pass
 
 print("Arrived at Checkout\nProgram has finished. Manually intervention needed. Please click the 'Apply Coupons' button to allow honey to find the best discounts available in this account.")
-
-# PROMO (Cannot automate this, unfortunately)
-# try:
-#     sleep(4)
-#     driver.find_element(By.XPATH, value='/html/body/div[1]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[1]/div[3]/div[3]/button/div/div[2]/span/span').click()
-# except:
-#     try:
-#         driver.find_element(By.XPATH, value='/html/body/div[1]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[1]/div[3]/div[3]/button').click()
-#     except:
-#         pass
-#     finally:
-#         sleep(3)
-# try:
-#     try:
-#         driver.find_element(By.XPATH, value='/html/div//div[2]/div/div/div/div/div/div/div[1]/div[2]/div[3]/div/button/div/div').click()
-#     except:
-#         pass
-
-#     try:
-#         driver.find_element(By.CLASS_NAME, value='btnCopy-0-3-54').click()
-#     except:
-#         pass
-#     try:
-#         driver.find_element(By.XPATH, value='//*[@id="c1_g0"]').click()
-#     except:
-#         pass
-#     try:
-#         driver.find_element(By.XPATH, value='//*[@id="c1_g0"]/div').click()
-#     except:
-#         pass
-
-#     try:
-#         driver.find_element(By.XPATH, value='/html/div//div[2]/div/div/div/div/div/div/div[1]/div[2]/div[3]/div/button/div/div').click()
-#     except:
-#         pass
-#     try:
-#         driver.find_element(By.XPATH, value='/html/div//div[2]/div/div/div/div/div/div/div[1]/div[2]/div[3]/div/button').click()
-#     except:
-#         pass
-#     try:
-#         driver.find_element(By.XPATH, value='/html/div//div[2]/div/div/div/div/div/div/div[1]/div[2]/div[3]/div/button').click()
-#     except:
-#         pass
-# except:
-#     pass
-# finally:
-#     print("Program has finished. Manually intervention needed. Please click the 'Apply Coupons' button to allow honey to find the best discounts available in this account.")

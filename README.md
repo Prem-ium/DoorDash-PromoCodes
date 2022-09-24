@@ -1,13 +1,9 @@
 # Dash-Honey-Dash
 
-A 98% automated method of finding the best DoorDash/DashPass coupons/discounts.
+A cool python script to discover the best promo codes and discounts available for DoorDash Food Delivery. Now... Dash Honey, Dash! 
 
 ## Important Notes
-Project Status: Incomplete.
-
-As it stands right now, this python program will do the heavy lifting and automate the boring tedious tasks such as signing up for a new account and filling the cart up. The user currently will need to intervene towards the very end of the program where the checkout cart page is loaded to click the pop-up button 'Apply Coupons.' 
-
-This program can be especially helpful on the go, running the program on replit through your phone should be able to help a user obtain some very nice coupon/promo codes without needing to log onto a computer to quickly find the best coupon/promo code to use.
+User interaction is needed ocassionally for phone/email verification due to DoorDash's two-step verification prompts. Addionally, user interaction is needed at the very end of the program at checkout where the user needs to click the button labled 'Apply Coupons.' manually, to start the process of checking through all known active promotion coupons.
 
 ## Installation
 The bot can be run using Python.
@@ -24,17 +20,21 @@ The bot can be run using Python.
    python main.py
 ```
 
-
 ## Environment Variables:
 
-To run this project, you will need to add the following environment variables to your `.env` file. Variables are necessary due to certain DoorDash coupons being targeted towards certain parts of the country. You're welcome to put an address outside of your city or state, but I cannot guarantee whether a promo code will work for your main account if you choose to go that route.
-
-`LOCAL_REST` = A string representing any local DoorDash resturant.
-
-`LOCAL_ADDRESS` = A local address in your area. Does not have to be your own necessairly, just make sure it is within the `LOCAL_REST`'s delivery range.
+To run this project, you will need to add the following environment variables to your `.env` file. 
 
 `AUTO_SIGNIN` = Boolean True/False whether you will provide the LOGIN in env
 
-`LOGIN` = Existing DoorDash Email/Password Credentials, seperated by ':', see .env for an example.
+   `LOGIN` = Existing DoorDash Email/Password Credentials, seperated by ':', see .env for an example. Only needed if AUTO_SIGNIN is set to true.
 
-`HANDLE_CART`= Boolean True/False, whether you want the program to automate filling a cart, or use pre-existing (only available when AUTO_SIGNIN is set to True)
+`HANDLE_CART`= Boolean True/False, whether you want the program to automate filling a cart, or use pre-existing (only available when AUTO_SIGNIN is set to True). Default set to False unless AUTO_SIGNIN is False (in which case, HANDLE_CART defaults to True).
+
+   `LOCAL_REST` = A string representing any local DoorDash resturant, only used if HANDLE_CART is set to True.
+
+   `LOCAL_ADDRESS` = A local address in your area. Does not have to be your own necessairly, just make sure it is within the local resturant's delivery range, generally only needed if HANDLE_CART is set to True.
+
+`SIGNUP_LOGIN`= Email and Password of the account you wish to create with doordash, seperated by colon, :, If none is passed-- a random email/password will be used in its place. Only used when AUTO_SIGNIN is set to False.
+
+## Comments
+Personally, I've paired this script with Replit, which enables me to check for the best discounts on the go (as I can simpily run the program on my phone through the replit app/website). This program was made so I could find the best deals and savings without needing to manually go through coupon/promo code one-by-one on my phone.
