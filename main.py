@@ -1,14 +1,11 @@
 import os
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from time import sleep
+import traceback
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
-import traceback
 from time import sleep
 from dotenv import load_dotenv
 
@@ -33,7 +30,7 @@ else:
     try:
         from random_words import RandomWords
     except ImportError:
-        os.system("pip install RandomWords")
+        os.system("pip3 install RandomWords")
         from random_words import RandomWords
         pass
     finally:
@@ -43,9 +40,9 @@ else:
     except KeyError:
         SIGNUP_EMAIL = rw.random_word() + rw.random_word() + rw.random_word() + '@gmail.com'
         SIGNUP_PASSWORD = rw.random_word() + rw.random_word() + '!'
-        print(f'No SIGNUP_LOGIN environment variable found, using generated account.\n')
+        print(f'No SIGNUP_LOGIN environment variable found, using generated account:\nEmail:\t{SIGNUP_EMAIL}\nPassword:\t{SIGNUP_PASSWORD}\n\n')
     HANDLE_CART = True
-    print(f'Auto-sign in disabled.\nNew DoorDash login will be generated for new user test case.\n(Fake) EMAIL:{SIGNUP_EMAIL}\nPASSWORD:{SIGNUP_PASSWORD}\nHandle Cart is set to {HANDLE_CART}\n')
+    print(f'Auto-sign in disabled.\nNew DoorDash login will be generated for new user test case.\nHandle Cart is set to {HANDLE_CART}\n')
 
 
 if (not os.environ["LOCAL_REST"] or not os.environ["LOCAL_ADDRESS"]) and HANDLE_CART:
@@ -61,33 +58,37 @@ def getDriver():
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_extension('honey.crx')
     try:
-        driver = webdriver.Chrome(options=chrome_options)
-    except:
         driver = webdriver.Chrome(
                 service=Service(ChromeDriverManager(cache_valid_range=30).install()),
                 options=chrome_options)
+    except Exception as e:
+        try:
+            driver = webdriver.Chrome(options=chrome_options)
+        except Exception as ek:
+            print(f'Attempted to use webdriver manager, but failed. \n{e}\nAttempted to use local webdriver, failed.\n{ek}')
+
     driver.maximize_window()
     return driver
 
 def signUp(driver):
-    driver.get("https://doordash.com/")
     print('\nAttempting to sign up...\n')
-    sleep(5)
-    EMAIL = rw.random_word() + rw.random_word() + rw.random_word() + '@gmail.com'
-    PASSWORD = rw.random_word() + rw.random_word() + '!'
+    driver.get('https://www.doordash.com/consumer/login')
+    sleep(2)
     try:
-        driver.find_element(By.XPATH, value='/html/body/div[1]/div[1]/div[1]/header/div/div[2]/div[3]/a[2]/div/div/div/span/span').click()
+        driver.find_element(By.XPATH, value="//button[@id='sign-up-nav-button']").click()
     except:
-        sleep(2)
-    try:
-        driver.find_element(By.XPATH, value='/html/body/div[1]/div[1]/div[1]/header/div/div[2]/div[3]/a[2]/div/div/div/span').click()
-    except:
-        sleep(2)
-    try:
-        driver.find_element(By.XPATH, value='/html/body/div[1]/div[1]/div[1]/header/div/div[2]/div[3]/a[2]').click()
-    except:
-        sleep(2)
-
+        try:
+            driver.find_element(By.XPATH, value="//button[@id='sign-up-nav-button']/div/div/div/span").click()
+        except:
+            try:
+                driver.find_element(By.XPATH, value="/html/body/div/div/div[1]/div/div/div/div/div[3]/div/div/div/span/button/div/div/div/span").click()
+            except:
+                try:
+                    driver.find_element(By.XPATH, value = '//button').click()
+                except:
+                    pass
+    finally:
+        sleep(5)
     try:
         driver.find_element(By.ID, value='FieldWrapper-0').send_keys('John')
         sleep(3)
@@ -98,8 +99,19 @@ def signUp(driver):
         driver.find_element(By.ID, value='FieldWrapper-4').send_keys('12345375984')
         sleep(2)
         driver.find_element(By.ID, value='FieldWrapper-5').send_keys(f'{SIGNUP_PASSWORD}')
-    except:
-        pass
+    except Exception as e:
+        try:
+            driver.find_element(By.ID, value='FieldWrapper-2').send_keys('John')
+            sleep(3)
+            driver.find_element(By.ID, value='FieldWrapper-3').send_keys('Doe')
+            sleep(3)
+            driver.find_element(By.ID, value='FieldWrapper-4').send_keys(f'{SIGNUP_EMAIL}')
+            sleep(3)
+            driver.find_element(By.ID, value='FieldWrapper-6').send_keys('12345375984')
+            sleep(2)
+            driver.find_element(By.ID, value='FieldWrapper-7').send_keys(f'{SIGNUP_PASSWORD}')
+        except Exception as ek:
+            print(f'Two attempts to find elements failed. Error: {e} and {ek}')
     try:
         driver.find_element(By.ID, value='sign-up-submit-button').click()
         print('Sign up successful!')
@@ -111,8 +123,6 @@ def signUp(driver):
             print('Sign up may have failed...')
             raise Exception(f'Sign up failed...\n{traceback.format_exc()}')
         pass
-    print(f'\nGenerated Account:\nEmail:\t{EMAIL}\nPassword:\t{PASSWORD}\n\n')
-    return EMAIL, PASSWORD
 
 
 def signin_doordash(driver):
@@ -132,7 +142,6 @@ def signin_doordash(driver):
         driver.find_element(By.XPATH, value='/html/body/div[1]/div/div[1]/div/div/div/div/div/div/div/form/div/button/div/div/div/span').click()
     except:
         driver.find_element(By.ID, value='FieldWrapper-1').send_keys(Keys.ENTER)
-
 
 def updateQuant(driver):
     print('Attempting to add quantity...')
@@ -176,7 +185,7 @@ if (chwd[1]):
 if AUTO_SIGNIN:
     signin_doordash(driver)
     print(driver.title)
-    if "food" not in driver.title.lower() or "login" in driver.title.lower():
+    if "login" in driver.title.lower():
         print('May have signed in sucessfully, possible phone/email verification required... Sleeping for 1 minute.')
         sleep(60)
     print(driver.title)
@@ -205,7 +214,24 @@ if HANDLE_CART:
     updateQuant(driver)
 
 if not AUTO_SIGNIN:
-    EMAIL, PASSWORD = signUp(driver)
+    signUp(driver)
+    driver.get('https://doordash.com/')
+    sleep(10)
+    try:
+        driver.find_element(By.XPATH, value='//span/span').click()
+    except:
+        try:
+            driver.find_element(By.XPATH, value="//div[@id='root']/div/div/header/div/div[2]/div[3]/a/div/div/div/span/span").click()
+        except:
+            try:
+                driver.find_element(By.XPATH, value='//div[1]/div[2]/div[3]/a[1]').click()
+            except:
+                try:
+                    driver.find_element(By.XPATH, value='//a[2]').click()
+                except:
+                    pass
+    finally:
+        sleep(6)
 
 driver.get('https://doordash.com/')
 
