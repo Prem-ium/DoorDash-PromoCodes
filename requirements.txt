@@ -1,2 +1,4 @@
 selenium
 RandomWords
+python-dotenv
+webdriver_manager
