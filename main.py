@@ -30,13 +30,13 @@ else:
     try:
         from random_words import RandomWords
     except ImportError:
-        os.system("pip3 install RandomWords")
+        os.system("pip install RandomWords")
         from random_words import RandomWords
-        pass
     finally:
         rw = RandomWords()
     try:
         SIGNUP_EMAIL, SIGNUP_PASSWORD = os.environ["SIGNUP_LOGIN"].split(':')
+        print(f'Sign-Up mode. Using SIGNUP_LOGIN environment variable:\t{SIGNUP_EMAIL}.')
     except KeyError:
         SIGNUP_EMAIL = rw.random_word() + rw.random_word() + rw.random_word() + '@gmail.com'
         SIGNUP_PASSWORD = rw.random_word() + rw.random_word() + '!'
@@ -46,8 +46,7 @@ else:
 
 
 if (not os.environ["LOCAL_REST"] or not os.environ["LOCAL_ADDRESS"]) and HANDLE_CART:
-    raise Exception(
-        f"LOCAL_REST or LOCAL_ADDRESS env variables are not set/or not found, while handle cart is set to {HANDLE_CART}.\nPlease set these variables and try again.")
+    raise Exception(f"LOCAL_REST or LOCAL_ADDRESS env variables are not set/or not found, while handle cart is set to {HANDLE_CART}.\nPlease set these variables and try again.")
 else:
     RESTAURANT = os.environ["LOCAL_REST"]
     ADDY = os.environ["LOCAL_ADDRESS"]
@@ -71,7 +70,7 @@ def getDriver():
     return driver
 
 def signUp(driver):
-    print('\nAttempting to sign up...\n')
+    print('\nCreating a new DoorDash account...\n')
     driver.get('https://www.doordash.com/consumer/login')
     sleep(2)
     try:
@@ -168,126 +167,126 @@ def updateQuant(driver):
         quant.click()
         sleep(1)
     driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[4]/div/div[2]/div/div[2]/div[3]/div/div/div/div/div/div[2]/button').click()
-    sleep(10)
+    sleep(12)
     print('Quantity Sucessfully Added')
 
+def main():
+    driver.get('https://doordash.com/home')
+    sleep(5)
+    chwd = driver.window_handles
+    if (chwd[1]):
+        driver._switch_to.window(chwd[1])
+        driver.close()
+        driver._switch_to.window(chwd[0])
 
-driver = getDriver()
-
-driver.get('https://doordash.com/home')
-sleep(5)
-chwd = driver.window_handles
-if (chwd[1]):
-    driver._switch_to.window(chwd[1])
-    driver.close()
-    driver._switch_to.window(chwd[0])
-
-if AUTO_SIGNIN:
-    signin_doordash(driver)
-    print(driver.title)
-    if "login" in driver.title.lower():
-        print('May have signed in sucessfully, possible phone/email verification required... Sleeping for 1 minute.')
-        sleep(60)
-    print(driver.title)
-    try:
-        driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[2]/div/div[3]/div/a/span').click()
-    except:
+    if AUTO_SIGNIN:
+        signin_doordash(driver)
+        if "login" in driver.title.lower():
+            print('May have signed in sucessfully, possible phone/email verification required... Sleeping for 1 minute.')
+            sleep(60)
         try:
-            driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[2]/div/div[3]/div/a/span').click()
+            driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[2]/div/div[3]/div/a/span').click()
         except:
             try:
-                driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[1]/div/a[1]/div/div/div/span/span').click()
-            except:
-                pass
-    sleep(7)
-
-try:
-    driver.find_element(By.TAG_NAME, value='input').send_keys(f'{ADDY}' + Keys.ENTER)
-    sleep(2)
-    driver.find_element(By.TAG_NAME, value='input').send_keys(Keys.ENTER)
-except:
-    print('Exception occured, hopefully you have already been signed in with existing address...')
-    pass
-sleep(5)
-
-if HANDLE_CART:
-    updateQuant(driver)
-
-if not AUTO_SIGNIN:
-    signUp(driver)
-    driver.get('https://doordash.com/')
-    sleep(10)
-    try:
-        driver.find_element(By.XPATH, value='//span/span').click()
-    except:
-        try:
-            driver.find_element(By.XPATH, value="//div[@id='root']/div/div/header/div/div[2]/div[3]/a/div/div/div/span/span").click()
-        except:
-            try:
-                driver.find_element(By.XPATH, value='//div[1]/div[2]/div[3]/a[1]').click()
+                driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[2]/div/div[3]/div/a/span').click()
             except:
                 try:
-                    driver.find_element(By.XPATH, value='//a[2]').click()
+                    driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[1]/div/a[1]/div/div/div/span/span').click()
                 except:
                     pass
-    finally:
-        sleep(6)
+        sleep(7)
 
-driver.get('https://doordash.com/')
-
-try:
     try:
+        driver.find_element(By.TAG_NAME, value='input').send_keys(f'{ADDY}' + Keys.ENTER)
+        sleep(2)
+        driver.find_element(By.TAG_NAME, value='input').send_keys(Keys.ENTER)
+    except:
+        print('Exception occured, hopefully you have already been signed in with existing address...')
+        pass
+    sleep(5)
+
+    if HANDLE_CART:
+        updateQuant(driver)
+
+    if not AUTO_SIGNIN:
+        signUp(driver)
+        driver.get('https://doordash.com/')
+        sleep(10)
+        try:
+            driver.find_element(By.XPATH, value='//span/span').click()
+        except:
+            try:
+                driver.find_element(By.XPATH, value="//div[@id='root']/div/div/header/div/div[2]/div[3]/a/div/div/div/span/span").click()
+            except:
+                try:
+                    driver.find_element(By.XPATH, value='//div[1]/div[2]/div[3]/a[1]').click()
+                except:
+                    try:
+                        driver.find_element(By.XPATH, value='//a[2]').click()
+                    except:
+                        pass
+        finally:
+            sleep(6)
+
+    driver.get('https://doordash.com/')
+
+    try:
+        try:
+            sleep(5)
+            driver.find_element(By.XPATH, value='/html/body/div[1]/div[1]/div[4]/div/div[2]/div/div[2]/div/div[2]/div/div/div/button/div/div/div/span').click()
+        except:
+            pass
+        driver.find_element(By.XPATH, value='/html/body/div[1]/div[1]/div[4]/div/div[2]/div/div[2]/div/div[2]/div/div/div/button').click()
+    except:
+        try:
+            driver.find_element(By.XPATH, value='/html/body/div[1]/div[1]/div[1]/header/div/div[2]/div[2]/button/div/div/div/span/div/div').click()
+        except:
+            sleep(2)
+    try:
+        driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[1]/header/div/div[2]/div[2]/button').click()
+    except:
+        sleep(2)
+
+    #not
+    try:
+        driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/span/span/span/a').click()
+    except:
         sleep(5)
-        driver.find_element(By.XPATH, value='/html/body/div[1]/div[1]/div[4]/div/div[2]/div/div[2]/div/div[2]/div/div/div/button/div/div/div/span').click()
+    #not
+    try:
+        driver.send_keys(Keys.TAB + Keys.TAB + Keys.ENTER)
     except:
         pass
-    driver.find_element(By.XPATH, value='/html/body/div[1]/div[1]/div[4]/div/div[2]/div/div[2]/div/div[2]/div/div/div/button').click()
-except:
-    pass
-finally:
-    sleep(3)
+    try:
+        driver.find_element(By.XPATH, value='//*[@id="root"]/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div/span/div/div[2]').click()
+    except:
+        sleep(2)
+    try:
+        driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a').click()
+    except:
+        sleep(2)
+    try:
+        driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div').click()
+    except:
+        sleep(2)
+    try:
+        driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div/span/div/div[1]').click()
+    except:
+        sleep(2)
+    try:
+        driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div/span/div/div[1]').click()
+    except:
+        pass
+    try:
+        driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div/span').click()
+    except:
+        pass
 
-try:
-    driver.find_element(By.XPATH, value='/html/body/div[1]/div[1]/div[1]/header/div/div[2]/div[2]/button/div/div/div/span/div/div').click()
-except:
-    sleep(2)
-try:
-    driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[1]/header/div/div[2]/div[2]/button').click()
-except:
-    sleep(2)
-try:
-    driver.find_element(
-        By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/span/span/span/a').click()
-except:
-    sleep(5)
-sleep(3)
-try:
-    driver.send_keys(Keys.TAB + Keys.TAB + Keys.ENTER)
-except:
-    pass
-try:
-    driver.find_element(By.XPATH, value='//*[@id="root"]/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div/span/div/div[2]').click()
-except:
-    sleep(2)
-try:
-    driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a').click()
-except:
-    sleep(2)
-try:
-    driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div').click()
-except:
-    sleep(2)
-try:
-    driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div/span/div/div[1]').click()
-except:
-    sleep(2)
-try:
-    driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div/span/div/div[1]').click()
-except:
-    pass
-try:
-    driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div[2]/div/a/div/div/div/span').click()
-except:
-    pass
+    print("Arrived at Checkout\nProgram has finished. Manually intervention needed. Please click the 'Apply Coupons' button to allow honey to find the best discounts available in this account.")
 
-print("Arrived at Checkout\nProgram has finished. Manually intervention needed. Please click the 'Apply Coupons' button to allow honey to find the best discounts available in this account.")
+if __name__ == '__main__':
+    driver = getDriver()
+    try:
+        main()
+    except:
+        print(traceback.format_exc())
