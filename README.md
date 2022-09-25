@@ -1,6 +1,6 @@
-# Dash-Honey-Dash
+# DoorDash Auto Promo Codes
 
-A cool python script to discover the best promo codes and discounts available for DoorDash Food Delivery. Now... Dash Honey, Dash! 
+A cool python script to discover the best promo codes, savings, and discounts available for all your DoorDash food cravings. 
 
 ## Important Notes
 User interaction is needed ocassionally for phone/email verification due to DoorDash's two-step verification prompts. Addionally, user interaction is needed at the very end of the program at checkout where the user needs to click the button labled 'Apply Coupons.' manually, to start the process of checking through all known active promotion coupons.
@@ -10,8 +10,8 @@ The bot can be run using Python.
 ### Python Script
 1. Clone this repository, cd into it, and install dependancies:
 ```sh
-   git clone https://github.com/sazncode/Dash-Honey-Dash.git
-   cd Dash-Honey-Dash
+   git clone https://github.com/sazncode/DoorDash-PromoCodes.git
+   cd DoorDash-PromoCodes
    pip install -r requirements.txt
    ```
 2. Configure your `.env` file (See below and example for options)
@@ -37,4 +37,6 @@ To run this project, you will need to add the following environment variables to
 `SIGNUP_LOGIN`= Email and Password of the account you wish to create with doordash, seperated by colon, :, If none is passed-- a random email/password will be used in its place. Only used when AUTO_SIGNIN is set to False.
 
 ## Comments
-Personally, I've paired this script with Replit, which enables me to check for the best discounts on the go (as I can simpily run the program on my phone through the replit app/website). This program was made so I could find the best deals and savings without needing to manually go through coupon/promo code one-by-one on my phone.
+Personally, I've paired this script with Replit, which enables me to check for the best discounts on the go (as I can simpily run the program on my phone through the replit app/website). This program was made so I could find the best deals and savings without needing to manually go through coupon/promo code one-by-one on my phone. 
+
+Now... Dash Honey, Dash! 
