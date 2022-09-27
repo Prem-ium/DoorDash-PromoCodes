@@ -5,6 +5,8 @@ A cool python script to discover the best promo codes, savings, and discounts av
 ## Important Notes
 User interaction is needed ocassionally for phone/email verification due to DoorDash's two-step verification prompts. Addionally, user interaction is needed at the very end of the program at checkout where the user needs to click the button labled 'Apply Coupons.' manually, to start the process of checking through all known active promotion coupons.
 
+This script is best paired with a repl on replit, so you may use Honey to find the best promo codes through your phone, on the go.
+
 ## Installation
 The bot can be run using Python.
 ### Python Script
