@@ -147,6 +147,26 @@ def updateQuant(driver):
     sleep(4)
     driver.get(f'{RESTAURANT}')
     sleep(5)
+
+    try:
+        title = driver.find_element(By.XPATH, value='//*[@id="ModalContent-0-Title"]/span').text
+        print(f'Found title: {title}')
+        if "outside of this" in title.lower() and "delivery area" in title.lower():
+            print('Restaurant is outside of delivery area. Attempting to change to pickup...')
+            try:
+                driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[4]/div/div[2]/div/div[2]/div[1]/div[2]/button[2]/div/div[2]/span[2]').click()
+                print('Changed to pickup sucessfully!\nWarning: Although this may work, since some coupons are only valid for certain delivery areas, you may not get the best deal available to you.\nIt is recommended that you change your address to a delivery area within the resturant\'s delivery range.')
+            except:
+                try:
+                    driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[4]/div/div[2]/div/div[2]/div[1]/div[2]/button[2]/div/div[2]/span[2]').click()
+                except:
+                    print('Restaurant is outside of delivery area. Exiting...')
+                    driver.close()
+                    raise Exception('Restaurant is outside of delivery area. Exiting...')
+
+    except:
+        pass
+
     try:
         driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[1]/div[1]/div/div[3]/div/div/div/div[2]/div[1]/button').click()
     except:
@@ -163,12 +183,16 @@ def updateQuant(driver):
         except:
             pass
     try:
-        col = driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div[1]/div/div[6]/div[2]')
-        col = col.find_elements(By.XPATH, value='*')
-        col[0].click()
+        driver.find_element(By.XPATH, value = "//button[contains(.,'Add')]").click()
     except:
-        pass
+        try:
+            col = driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div[1]/div/div[6]/div[2]')
+            col = col.find_elements(By.XPATH, value='*')
+            col[0].click()
+        except:
+            pass
     sleep(4)
+    
     quant = driver.find_element(By.XPATH, value='//*[@id="prism-modal-footer"]/div/div/div/div[1]/div[3]/button')
     for i in range(8):
         quant.click()
