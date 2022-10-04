@@ -156,6 +156,13 @@ def updateQuant(driver):
     except Exception as e:
         pass
     try:
+        driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[4]/div/div[2]/div/div[2]/div[1]/div/nav/div[1]/div[1]/div/button').click()
+    except:
+        try:
+            driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[4]/div/div[2]/div/div[2]/div[1]/div/nav/div[1]/div[1]/div/button/svg').click()
+        except:
+            pass
+    try:
         col = driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div[1]/div/div[6]/div[2]')
         col = col.find_elements(By.XPATH, value='*')
         col[0].click()
@@ -166,6 +173,16 @@ def updateQuant(driver):
     for i in range(8):
         quant.click()
         sleep(1)
+    try:
+        driver.find_element(By.ID, value='Toggle-2').click()
+    except:
+        try:
+            driver.find_element(By.ID, value='Toggle-1').click()
+        except:
+            try:
+                driver.find_element(By.ID, value='Toggle-0').click()
+            except:
+                pass
     driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[4]/div/div[2]/div/div[2]/div[3]/div/div/div/div/div/div[2]/button').click()
     sleep(12)
     print('Quantity Sucessfully Added')
