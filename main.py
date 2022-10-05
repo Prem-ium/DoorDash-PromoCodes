@@ -87,7 +87,7 @@ def signUp(driver):
                 except:
                     pass
     finally:
-        sleep(5)
+        sleep(3)
     try:
         driver.find_element(By.ID, value='FieldWrapper-0').send_keys('John')
         sleep(3)
@@ -125,7 +125,7 @@ def signUp(driver):
 
 
 def signin_doordash(driver):
-    print('Attempting to sign in...')
+    print('Attempting to sign in...\n')
     driver.get('https://www.doordash.com/consumer/login')
     sleep(10)
     try:
@@ -143,27 +143,24 @@ def signin_doordash(driver):
         driver.find_element(By.ID, value='FieldWrapper-1').send_keys(Keys.ENTER)
 
 def updateQuant(driver):
-    print('Attempting to add quantity...')
-    sleep(4)
+    print('Attempting to add quantity...\n')
+    sleep(2)
     driver.get(f'{RESTAURANT}')
     sleep(5)
 
     try:
         title = driver.find_element(By.XPATH, value='//*[@id="ModalContent-0-Title"]/span').text
-        print(f'Found title: {title}')
         if "outside of this" in title.lower() and "delivery area" in title.lower():
-            print('Restaurant is outside of delivery area. Attempting to change to pickup...')
+            print('\nRestaurant is outside of delivery area. Attempting to change to pickup...\n')
             try:
                 driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[4]/div/div[2]/div/div[2]/div[1]/div[2]/button[2]/div/div[2]/span[2]').click()
-                print('Changed to pickup sucessfully!\nWarning: Although this may work, since some coupons are only valid for certain delivery areas, you may not get the best deal available to you.\nIt is recommended that you change your address to a delivery area within the resturant\'s delivery range.')
+                print('Changed to pickup sucessfully!\n\nWarning: Although this may work, since some coupons are only valid for certain delivery areas, you may not get the best deal available to you.\nIt is recommended that you change your address to a delivery area within the resturant\'s delivery range.\n\n')
             except:
                 try:
                     driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[4]/div/div[2]/div/div[2]/div[1]/div[2]/button[2]/div/div[2]/span[2]').click()
                 except:
-                    print('Restaurant is outside of delivery area. Exiting...')
                     driver.close()
                     raise Exception('Restaurant is outside of delivery area. Exiting...')
-
     except:
         pass
 
@@ -195,8 +192,12 @@ def updateQuant(driver):
     
     quant = driver.find_element(By.XPATH, value='//*[@id="prism-modal-footer"]/div/div/div/div[1]/div[3]/button')
     for i in range(8):
-        quant.click()
-        sleep(1)
+        try:
+            quant.click()
+        except:
+            sleep(2)
+            quant.click()
+    
     try:
         driver.find_element(By.ID, value='Toggle-2').click()
     except:
@@ -209,10 +210,11 @@ def updateQuant(driver):
                 pass
     driver.find_element(By.XPATH, value='/html/body/div[1]/main/div/div[4]/div/div[2]/div/div[2]/div[3]/div/div/div/div/div/div[2]/button').click()
     sleep(12)
-    print('Quantity Sucessfully Added')
+    print('Quantity Sucessfully Added\n')
 
 def main():
     driver.get('https://doordash.com/home')
+    driver.implicitly_wait(5)
     sleep(5)
     chwd = driver.window_handles
     if (chwd[1]):
@@ -223,7 +225,7 @@ def main():
     if AUTO_SIGNIN:
         signin_doordash(driver)
         if "login" in driver.title.lower():
-            print('May have signed in sucessfully, possible phone/email verification required... Sleeping for 1 minute.')
+            print('Possible 2-step phone/email account verification required. Sleeping for one minute...')
             sleep(60)
         try:
             driver.find_element(By.XPATH, value='//*[@id="__next"]/main/div/div[1]/div/div[2]/div/div[3]/div/a/span').click()
@@ -252,7 +254,7 @@ def main():
     if not AUTO_SIGNIN:
         signUp(driver)
         driver.get('https://doordash.com/')
-        sleep(10)
+        sleep(6)
         try:
             driver.find_element(By.XPATH, value='//span/span').click()
         except:
@@ -273,7 +275,7 @@ def main():
 
     try:
         try:
-            sleep(5)
+            sleep(3)
             driver.find_element(By.XPATH, value='/html/body/div[1]/div[1]/div[4]/div/div[2]/div/div[2]/div/div[2]/div/div/div/button/div/div/div/span').click()
         except:
             pass
