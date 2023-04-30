@@ -1,7 +1,6 @@
 # DoorDash Auto Promo Codes
 
-A cool python script to apply the most common promo codes to your DoorDash account. 
-This repository automates the process of creating new accounts, adding items to the cart, & more.
+This repository automates the process of creating new accounts, adding items to the cart, & applying various promo codes from Honey.
 
 [Check out <b>this Coupon Scraper repository</b> to scrape the internet for more DoorDash promotion codes.](https://github.com/Prem-ium/DoorDash-Coupon-Scraper)
 
@@ -45,3 +44,7 @@ To run this project, you will need to add the following environment variables to
 Personally, I've paired this script with Replit, which enables me to check for the best discounts on the go (as I can simpily run the program on my phone through the replit app/website). This program was made so I could find the best deals and savings without needing to manually go through coupon/promo code one-by-one on my phone. 
 
 Now... Dash Honey, Dash! 
+
+## Archived Update
+
+This repository will no longer be maintained or updated as of 04/30/2023
