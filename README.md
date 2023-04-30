@@ -1,6 +1,9 @@
 # DoorDash Auto Promo Codes
 
-A cool python script to discover the best promo codes, savings, and discounts available for all your DoorDash food cravings. 
+A cool python script to apply the most common promo codes to your DoorDash account. 
+This repository automates the process of creating new accounts, adding items to the cart, & more.
+
+[Check out <b>this Coupon Scraper repository</b> to scrape the internet for more DoorDash promotion codes.](https://github.com/Prem-ium/DoorDash-Coupon-Scraper)
 
 ## Important Notes
 User interaction is needed ocassionally for phone/email verification due to DoorDash's two-step verification prompts. Addionally, user interaction is needed at the very end of the program at checkout where the user needs to click the button labled 'Apply Coupons.' manually, to start the process of checking through all known active promotion coupons.
